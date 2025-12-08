@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>El Infiltrado: Ultimate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CORE STYLES --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            background-image: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 100%);
+            color: #ffffff;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- ANIMATIONS --- */
+        .fade-enter { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        
+        .pulse-soft { animation: pulseSoft 2s infinite; }
+        @keyframes pulseSoft { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+        /* --- UI COMPONENTS --- */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .mode-card {
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        .mode-card.selected {
+            background: rgba(79, 70, 229, 0.2);
+            border-color: #6366f1;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .avatar-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+        }
+
+        .player-card.done {
+            opacity: 0.5;
+            filter: grayscale(0.8);
+            border-color: transparent;
+            background-color: #1e293b;
+        }
+
+        .hidden-screen { display: none !important; }
+
+        .modal-overlay {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(8px);
+        }
+
+        /* Switch Toggle FIXED */
+        .toggle-checkbox:checked {
+            transform: translateX(100%); /* Moves the knob to the right */
+            border-color: #68D391;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #68D391;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center sm:p-4">
+
+    <!-- APP CONTAINER -->
+    <div class="w-full max-w-md h-[100dvh] sm:h-[800px] sm:rounded-[2.5rem] overflow-hidden bg-[#0B0F19] flex flex-col relative shadow-2xl sm:border border-slate-800">
+        
+        <!-- HEADER -->
+        <div class="pt-8 pb-4 px-6 text-center z-10 bg-gradient-to-b from-[#0B0F19] to-transparent">
+            <h1 onclick="resetToHome()" class="text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 cursor-pointer">
+                EL INFILTRADO
+            </h1>
+            <p class="text-[10px] text-slate-500 uppercase tracking-[0.2em] mt-1 font-semibold">
+                MADE BY: YUYITO Y SALVI
+            </p>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="flex-1 relative overflow-hidden flex flex-col">
+            
+            <!-- 1. SETUP SCREEN -->
+            <div id="screen-setup" class="flex-1 flex flex-col px-6 pb-6 overflow-y-auto fade-enter">
+                
+                <!-- Players Section -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-end mb-3">
+                        <label class="text-sm font-semibold text-slate-300">Jugadores (Orden de ronda)</label>
+                        <span id="player-count-badge" class="bg-slate-800 text-slate-400 text-xs px-2 py-1 rounded-full">0</span>
+                    </div>
+                    
+                    <div class="flex gap-2 mb-3">
+                        <input type="text" id="player-input" placeholder="Nombre..." class="flex-1 bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors" onkeypress="handleEnter(event)">
+                        <button onclick="addPlayer()" class="bg-indigo-600 hover:bg-indigo-500 text-white w-12 rounded-xl flex items-center justify-center transition-colors shadow-lg shadow-indigo-900/50">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+
+                    <div id="players-list" class="flex flex-wrap gap-2 max-h-32 overflow-y-auto min-h-[40px]">
+                        <p class="text-slate-600 text-sm italic w-full text-center py-2">Agregá jugadores en orden...</p>
+                    </div>
+                </div>
+
+                <!-- Settings Grid -->
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <!-- Impostor Count -->
+                    <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center">
+                        <i class="fas fa-user-secret text-2xl text-purple-400 mb-2"></i>
+                        <span class="text-xs text-slate-400 mb-1">Impostores</span>
+                        <div class="flex items-center gap-3">
+                            <button onclick="changeImpostorCount(-1)" class="text-slate-400 hover:text-white"><i class="fas fa-minus-circle"></i></button>
+                            <span id="impostor-count-display" class="text-xl font-bold">1</span>
+                            <button onclick="changeImpostorCount(1)" class="text-slate-400 hover:text-white"><i class="fas fa-plus-circle"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Category Button -->
+                    <div onclick="openCategoryModal()" class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-slate-800/80 transition-colors border-indigo-500/30 border">
+                        <i class="fas fa-layer-group text-2xl text-blue-400 mb-2"></i>
+                        <span class="text-xs text-slate-400 mb-1">Categorías</span>
+                        <div class="flex items-center gap-2">
+                            <span id="cat-count-display" class="text-xl font-bold">1</span>
+                            <i class="fas fa-chevron-right text-xs text-slate-500"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Impostor Hint Toggle -->
+                <div class="glass-panel p-4 rounded-2xl mb-6 flex items-center justify-between">
+                    <div>
+                        <span class="text-sm font-bold block text-slate-200">Pista para Infiltrado</span>
+                        <span class="text-[10px] text-slate-400">Ver categoría (Modo Palabras)</span>
+                    </div>
+                    <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" name="toggle" id="impostor-hint-toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-slate-600 left-0 transition-all duration-300"/>
+                        <label for="impostor-hint-toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-700 cursor-pointer"></label>
+                    </div>
+                </div>
+
+                <!-- Game Mode Selector -->
+                <div class="mb-6 flex-1">
+                    <label class="text-sm font-semibold text-slate-300 mb-3 block">Modo de Juego</label>
+                    <div class="grid grid-cols-1 gap-3">
+                        <div onclick="selectMode('questions')" id="mode-questions" class="mode-card selected bg-slate-800 p-4 rounded-2xl cursor-pointer relative overflow-hidden flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-indigo-900/50 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-question text-indigo-400"></i>
+                            </div>
+                            <div class="relative z-10">
+                                <span class="font-bold text-sm block">Preguntas</span>
+                                <span class="text-[10px] text-slate-400 leading-tight block mt-1">Busca quién tiene la pregunta diferente</span>
+                            </div>
+                        </div>
+                        <div onclick="selectMode('words')" id="mode-words" class="mode-card bg-slate-800 p-4 rounded-2xl cursor-pointer relative overflow-hidden flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-pink-900/50 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-font text-pink-400"></i>
+                            </div>
+                            <div class="relative z-10">
+                                <span class="font-bold text-sm block">Palabras</span>
+                                <span class="text-[10px] text-slate-400 leading-tight block mt-1">Busca quién no sabe la palabra secreta</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Start Button -->
+                <button onclick="startGame()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-indigo-900/40 mt-auto active:scale-95 transition-transform uppercase tracking-wider">
+                    Iniciar Juego
+                </button>
+            </div>
+
+            <!-- CATEGORY MODAL -->
+            <div id="modal-categories" class="hidden absolute inset-0 z-50 modal-overlay flex flex-col justify-end fade-enter">
+                <div class="bg-slate-900 rounded-t-[2.5rem] p-6 h-[80%] flex flex-col border-t border-slate-700 shadow-2xl">
+                    <div class="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-6"></div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-white">Elegir Categorías</h2>
+                        <button onclick="closeCategoryModal()" class="text-indigo-400 text-sm font-semibold">Listo</button>
+                    </div>
+                    
+                    <div id="category-list" class="flex-1 overflow-y-auto space-y-2 pr-1 pb-4">
+                        <!-- Injected via JS -->
+                    </div>
+                    
+                    <button onclick="closeCategoryModal()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl mt-4">
+                        Confirmar Selección
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. HUB SCREEN (RESTORED) -->
+            <div id="screen-hub" class="hidden-screen flex-1 flex flex-col px-6 pb-6 fade-enter">
+                <div class="text-center mb-6">
+                    <p class="text-slate-400 text-sm">Toca tu nombre para ver tu secreto</p>
+                    <h2 class="text-xl font-bold text-white">Hub de Jugadores</h2>
+                </div>
+
+                <!-- Grid of Players -->
+                <div id="hub-grid" class="grid grid-cols-2 gap-3 overflow-y-auto flex-1 content-start pb-4">
+                    <!-- Player Cards Injected Here -->
+                </div>
+
+                <div class="mt-auto pt-4 text-center">
+                    <!-- Status or Random Starter display -->
+                    <div id="hub-status-container" class="mb-4">
+                        <p id="hub-status-text" class="text-xs text-slate-500 animate-pulse">Esperando a que todos vean su secreto...</p>
+                    </div>
+                    
+                    <button id="btn-reveal-impostor" onclick="triggerReveal()" class="hidden w-full bg-white text-indigo-900 font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition-transform">
+                        <i class="fas fa-eye mr-2"></i> REVELAR INFILTRADO
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. INTERACTION SCREEN -->
+            <div id="screen-interaction" class="hidden-screen flex-1 flex flex-col px-6 pb-6 fade-enter relative">
+                <div class="flex-1 flex flex-col justify-center">
+                    <div class="text-center mb-8">
+                        <div class="w-16 h-16 mx-auto rounded-full avatar-gradient flex items-center justify-center text-2xl font-bold shadow-2xl mb-3">
+                            <span id="interaction-initial">?</span>
+                        </div>
+                        <h2 id="interaction-name" class="text-2xl font-bold text-white">Jugador</h2>
+                    </div>
+
+                    <!-- The Secret Card -->
+                    <div class="glass-panel p-8 rounded-3xl border-t border-indigo-500/30 text-center relative overflow-hidden group mb-6">
+                        <div class="absolute inset-0 bg-indigo-600/10 blur-xl"></div>
+                        
+                        <p id="secret-label" class="text-xs text-indigo-300 uppercase tracking-widest mb-3 relative z-10">Tu Misión</p>
+                        
+                        <!-- Dynamic Content -->
+                        <h3 id="secret-content" class="text-2xl md:text-3xl font-bold text-white relative z-10 leading-tight">
+                            Cargando...
+                        </h3>
+                        
+                        <p id="secret-subtext" class="text-xs text-slate-400 mt-4 relative z-10 px-4 leading-relaxed">
+                            <!-- Hint text based on role -->
+                        </p>
+                    </div>
+
+                    <!-- Input Area (Only for Questions Mode) -->
+                    <div id="input-area" class="relative hidden">
+                        <textarea id="interaction-input" rows="3" class="w-full bg-slate-800 border-0 rounded-2xl p-5 text-white placeholder-slate-600 focus:ring-2 focus:ring-indigo-500 resize-none text-lg" placeholder="Escribí tu respuesta..."></textarea>
+                    </div>
+                </div>
+
+                <button onclick="completeInteraction()" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg mt-6 active:scale-95 transition-transform">
+                    <span id="btn-interaction-text">ENTENDIDO</span>
+                </button>
+            </div>
+
+            <!-- 4. REVEAL SCREEN -->
+            <div id="screen-reveal" class="hidden-screen flex-1 flex flex-col px-6 pb-6 fade-enter justify-center">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-white mb-2">La Verdad</h2>
+                    <p class="text-slate-400 text-sm">Resultados de la ronda</p>
+                </div>
+
+                <div class="glass-panel p-8 rounded-3xl border-2 border-red-500/30 text-center relative overflow-hidden">
+                     <p class="text-[10px] text-red-400 uppercase tracking-widest mb-4">Los infiltrados eran</p>
+                    <div id="reveal-names" class="text-3xl font-black text-white mb-6 tracking-tight"></div>
+                    
+                    <div class="bg-slate-800/50 rounded-xl p-4 text-left text-sm border border-slate-700 space-y-3">
+                        <div>
+                            <span class="block text-[10px] text-slate-500 uppercase">Inocentes tenían</span>
+                            <span id="reveal-data-normal" class="text-indigo-300 font-semibold text-lg leading-tight block mt-1">...</span>
+                        </div>
+                        <div id="reveal-data-impostor-container">
+                            <span class="block text-[10px] text-slate-500 uppercase">Infiltrado tenía</span>
+                            <span id="reveal-data-impostor" class="text-red-300 font-semibold text-lg leading-tight block mt-1">...</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Cover overlay for tap-to-reveal -->
+                    <div id="reveal-cover" class="absolute inset-0 bg-slate-900 z-50 flex flex-col items-center justify-center cursor-pointer transition-opacity duration-500" onclick="this.style.opacity='0'; this.style.pointerEvents='none'">
+                        <i class="fas fa-lock text-3xl text-red-500 mb-2"></i>
+                        <p class="text-sm font-bold text-white">TOCÁ PARA VER</p>
+                    </div>
+                </div>
+
+                <!-- Questions Mode Answers List (Optional) -->
+                <div id="answers-display" class="hidden mt-6 flex-1 overflow-y-auto max-h-48">
+                    <h3 class="text-sm font-bold text-slate-300 mb-2">Respuestas:</h3>
+                    <div id="answers-list-content" class="space-y-2"></div>
+                </div>
+
+                <button onclick="resetGame()" class="w-full mt-auto bg-white text-slate-900 font-bold py-4 rounded-2xl shadow-xl active:scale-95 transition-transform">
+                    NUEVA RONDA
+                </button>
+            </div>
+
+            <!-- CURIOUS TRAP SCREEN -->
+            <div id="screen-trap" class="hidden-screen fixed inset-0 z-[100] bg-red-900 flex flex-col items-center justify-center p-6 text-center animate-bounce">
+                <h1 class="text-4xl md:text-6xl font-black text-yellow-300 mb-8 uppercase drop-shadow-lg">
+                    ¡ACA SE COJEN A LOS CURIOSOS!🍆🤣
+                </h1>
+                <button onclick="closeCuriousTrap()" class="bg-white text-red-900 font-bold py-4 px-8 rounded-full shadow-2xl text-xl hover:scale-105 transition-transform">
+                    VOLVER
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" onclick="triggerCuriousTrap()" class="fixed top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl border border-slate-700 flex items-center gap-3 translate-y-[-150%] transition-transform duration-300 z-50 cursor-pointer hover:bg-slate-700">
+        <i class="fas fa-info-circle text-indigo-400"></i>
+        <span id="toast-msg" class="text-sm font-medium">Notificación</span>
+    </div>
+
+<script>
+    /* --- DATASETS --- */
+    const DB_QUESTIONS = {
+        argentina: [
+            { n: "¿Qué es lo que no puede faltar en la heladera?", i: "¿Qué es lo que no puede faltar en la alacena?" },
+            { n: "¿Cuál es el mejor invento argentino?", i: "¿Cuál es el peor hábito argentino?" },
+            { n: "¿Qué lugar de Argentina visitarías una y otra vez?", i: "¿Qué lugar del mundo te gustaría conocer?" },
+            { n: "¿Qué comida típica le recomendarías a un turista?", i: "¿Qué comida odiás?" },
+            { n: "¿Quién es el argentino más famoso de la historia?", i: "¿Quién es el personaje más polémico?" }
+        ],
+        futbol: [
+            { n: "¿Quién es el mejor jugador del mundo hoy?", i: "¿Quién fue el mejor jugador del siglo pasado?" },
+            { n: "¿Qué equipo juega mejor al fútbol actualmente?", i: "¿Qué equipo te cae peor?" },
+            { n: "¿Cuál fue el momento más triste del fútbol?", i: "¿Cuál fue tu momento más feliz?" },
+            { n: "¿Qué regla del fútbol cambiarías?", i: "¿Qué deporte te gusta además del fútbol?" }
+        ],
+        amor: [
+            { n: "¿Qué es lo más importante en una pareja?", i: "¿Qué es lo que más te atrae físicamente?" },
+            { n: "¿Cuál es el motivo principal de las peleas?", i: "¿Por qué terminan las relaciones?" },
+            { n: "¿Creés en el amor a primera vista?", i: "¿Creés en el destino?" }
+        ],
+        variado: [
+            { n: "¿Qué harías con 1 millón de dólares?", i: "¿Qué harías si fueras invisible?" },
+            { n: "¿Cuál es tu mayor miedo?", i: "¿Cuál es tu mayor sueño?" },
+            { n: "¿Qué superpoder tendrías?", i: "¿Qué animal serías?" }
+        ]
+    };
+
+    const DB_WORDS = {
+        argentina: ["Mate", "Obelisco", "Asado", "Dulce de Leche", "Fernet", "Messi", "Milanesa", "Carpincho", "Dólar Blue", "Subte", "Choripán", "Camiseta", "Fútbol", "Empanada", "Iguazú", "Patagonia", "Colectivo", "Facturas"],
+        futbol: ["Messi", "Maradona", "Pelota", "Arco", "Penal", "VAR", "Mundial", "Copa", "Botines", "Cristiano Ronaldo", "Mbappé", "Haaland", "Vinicius Jr", "Bellingham", "Real Madrid", "Barcelona", "Manchester City", "Boca Juniors", "River Plate", "Scaloni", "Dibu Martínez", "Offside", "Corner"],
+        amor: ["Boda", "Anillo", "Divorcio", "Tinder", "Corazón", "Cita", "Beso", "Ex", "Flores", "Cena", "San Valentín", "Novio", "Amante", "Celos", "Infidelidad", "Ruptura", "Compromiso"],
+        humor_negro: ["Funeral", "Herencia", "Fantasma", "Accidente", "Crimen", "Cárcel", "Veneno", "Ataúd", "Testamento", "Zombies", "Cementerio", "Morgue", "Apocalipsis", "Caníbal", "Lápida"],
+        tecnologia: ["Robot", "Wifi", "Instagram", "Hacker", "Dron", "Bitcoin", "IA", "Virus", "Contraseña", "TikTok", "Google", "Smartphone", "Nube", "Streaming", "WhatsApp", "Influencer", "Gamer"],
+        placeres: ["Chocolate", "Pizza", "Netflix", "Siesta", "Helado", "Hamburguesa", "Cerveza", "Viernes", "Shopping", "Masaje", "Queso", "Vino", "Playa", "Vacaciones", "Dormir"],
+        vida_diaria: ["Trabajo", "Despertador", "Tráfico", "Supermercado", "Alquiler", "Lluvia", "Lunes", "Café", "Sueldo", "Jefe", "Impuestos", "Examen", "Gimnasio", "Dieta", "Insomnio"]
+    };
+
+    const CATEGORIES = [
+        { id: 'argentina', name: '🇦🇷 Argentina', desc: 'Cultura y costumbres' },
+        { id: 'futbol', name: '⚽ Fútbol', desc: 'Mundial, jugadores y clubes' },
+        { id: 'amor', name: '❤️ Amor y Citas', desc: 'Parejas y desastres' },
+        { id: 'humor_negro', name: '💀 Humor Negro', desc: 'Solo para valientes' },
+        { id: 'tecnologia', name: '🤖 Futuro y Tech', desc: 'Dilemas digitales' },
+        { id: 'placeres', name: '🍕 Placeres', desc: 'Gustos culposos' },
+        { id: 'vida_diaria', name: '🏠 Vida Diaria', desc: 'Rutina y quejas' }
+    ];
+
+    /* --- GAME STATE --- */
+    let state = {
+        players: [],
+        impostorsCount: 1,
+        mode: 'questions',
+        selectedCats: new Set(['argentina']),
+        impostorHint: false,
+        
+        roles: {}, 
+        roundData: null,
+        roundCategoryName: '', 
+        impostorList: [],
+        completedPlayers: new Set(),
+        answers: {},
+        randomStarter: '' 
+    };
+
+    let currentPlayerInteraction = '';
+
+    /* --- DOM ELEMENTS --- */
+    const screens = {
+        setup: document.getElementById('screen-setup'),
+        hub: document.getElementById('screen-hub'),
+        interaction: document.getElementById('screen-interaction'),
+        reveal: document.getElementById('screen-reveal')
+    };
+
+    /* --- INIT --- */
+    function init() {
+        renderCategories();
+        updatePlayerCount();
+    }
+
+    /* --- SETUP LOGIC --- */
+    function handleEnter(e) { if(e.key === 'Enter') addPlayer(); }
+
+    function addPlayer() {
+        const input = document.getElementById('player-input');
+        const name = input.value.trim().toUpperCase();
+        if(!name) return;
+        if(state.players.includes(name)) { showToast("¡Nombre repetido!"); return; }
+        
+        state.players.push(name);
+        input.value = '';
+        renderPlayerList();
+        updatePlayerCount();
+    }
+
+    function removePlayer(name) {
+        state.players = state.players.filter(p => p !== name);
+        renderPlayerList();
+        updatePlayerCount();
+    }
+
+    function renderPlayerList() {
+        const container = document.getElementById('players-list');
+        if(state.players.length === 0) {
+            container.innerHTML = '<p class="text-slate-600 text-sm italic w-full text-center py-2">Agregá jugadores en orden...</p>';
+            return;
+        }
+        // Use index to show 1), 2) etc.
+        container.innerHTML = state.players.map((p, i) => `
+            <div class="bg-slate-800 border border-slate-700 pl-3 pr-2 py-1.5 rounded-lg flex items-center gap-2 fade-enter">
+                <span class="text-sm font-bold text-slate-200"><span class="text-indigo-400 mr-1">${i+1})</span> ${p}</span>
+                <button onclick="removePlayer('${p}')" class="text-red-400 hover:text-red-300 w-6 h-6 flex items-center justify-center ml-auto"><i class="fas fa-times"></i></button>
+            </div>
+        `).join('');
+    }
+
+    function updatePlayerCount() {
+        document.getElementById('player-count-badge').innerText = state.players.length;
+        const maxImpostors = Math.max(1, state.players.length - 1);
+        if(state.impostorsCount > maxImpostors && state.players.length > 0) state.impostorsCount = maxImpostors;
+        if(state.impostorsCount < 1) state.impostorsCount = 1;
+        document.getElementById('impostor-count-display').innerText = state.impostorsCount;
+    }
+
+    function changeImpostorCount(delta) {
+        let newCount = state.impostorsCount + delta;
+        const maxImpostors = Math.max(1, state.players.length - 1);
+        if(state.players.length < 3) { showToast("Mínimo 3 jugadores"); return; }
+        if(newCount < 1) newCount = 1;
+        if(newCount > maxImpostors) newCount = maxImpostors;
+        state.impostorsCount = newCount;
+        document.getElementById('impostor-count-display').innerText = state.impostorsCount;
+    }
+
+    function selectMode(mode) {
+        state.mode = mode;
+        document.querySelectorAll('.mode-card').forEach(el => el.classList.remove('selected'));
+        document.getElementById(`mode-${mode}`).classList.add('selected');
+    }
+
+    function openCategoryModal() { document.getElementById('modal-categories').classList.remove('hidden'); }
+    function closeCategoryModal() { document.getElementById('modal-categories').classList.add('hidden'); }
+
+    function renderCategories() {
+        const list = document.getElementById('category-list');
+        list.innerHTML = CATEGORIES.map(c => {
+            const isSel = state.selectedCats.has(c.id);
+            return `
+            <div onclick="toggleCat('${c.id}')" class="w-full p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${isSel ? 'bg-indigo-900/40 border-indigo-500 shadow-md' : 'bg-slate-800/50 border-slate-700'}">
+                <div class="flex items-center gap-3">
+                    ${isSel ? '<i class="fas fa-check-circle text-green-400 text-lg"></i>' : '<div class="w-5 h-5 rounded-full border border-slate-600"></div>'}
+                    <div>
+                        <h4 class="font-bold text-sm text-white">${c.name}</h4>
+                        <p class="text-[10px] text-slate-400">${c.desc}</p>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+        document.getElementById('cat-count-display').innerText = state.selectedCats.size;
+    }
+
+    function toggleCat(id) {
+        if(state.selectedCats.has(id)) {
+            if(state.selectedCats.size > 1) state.selectedCats.delete(id);
+            else showToast("Mínimo una categoría");
+        } else {
+            state.selectedCats.add(id);
+        }
+        renderCategories();
+    }
+
+    /* --- GAME LOGIC --- */
+    function startGame() {
+        if(state.players.length < 3) { showToast("Faltan jugadores (Min 3)"); return; }
+        
+        state.impostorHint = document.getElementById('impostor-hint-toggle').checked;
+        state.completedPlayers = new Set();
+        state.answers = {};
+        state.randomStarter = '';
+        
+        // 1. Assign Roles
+        state.roles = {};
+        state.impostorList = [];
+        
+        let indices = state.players.map((_, i) => i);
+        indices.sort(() => Math.random() - 0.5); 
+        
+        const maxImps = Math.max(1, state.players.length - 1);
+        if(state.impostorsCount > maxImps) state.impostorsCount = maxImps;
+
+        for(let i=0; i<state.impostorsCount; i++) {
+            const idx = indices.pop();
+            const playerName = state.players[idx];
+            state.roles[playerName] = 'impostor';
+            state.impostorList.push(playerName);
+        }
+        indices.forEach(idx => {
+            state.roles[state.players[idx]] = 'normal';
+        });
+
+        // 2. Select Content
+        let catKeys = Array.from(state.selectedCats);
+        if(catKeys.length === 0) catKeys = ['argentina'];
+        const randomCatId = catKeys[Math.floor(Math.random() * catKeys.length)];
+        
+        const catObj = CATEGORIES.find(c => c.id === randomCatId);
+        state.roundCategoryName = catObj ? catObj.name : 'General';
+
+        let pool = (state.mode === 'questions') ? DB_QUESTIONS[randomCatId] : DB_WORDS[randomCatId];
+        if (!pool) pool = (state.mode === 'questions') ? DB_QUESTIONS['argentina'] : DB_WORDS['argentina'];
+
+        state.roundData = pool[Math.floor(Math.random() * pool.length)];
+
+        updateHub();
+        switchScreen('hub');
+    }
+
+    /* --- HUB LOGIC --- */
+    function updateHub() {
+        const grid = document.getElementById('hub-grid');
+        const total = state.players.length;
+        const completed = state.completedPlayers.size;
+        const allDone = completed === total;
+
+        grid.innerHTML = state.players.map((p, i) => {
+            const isDone = state.completedPlayers.has(p);
+            // Display Index + Name
+            return `
+            <div onclick="${!isDone ? `enterPlayer('${p}')` : ''}" 
+                 class="player-card ${isDone ? 'done' : 'bg-slate-700/50 border-indigo-500/30'} 
+                        border rounded-2xl p-4 flex flex-col items-center justify-center relative h-32 cursor-pointer active:scale-95 transition-transform">
+                <div class="w-12 h-12 rounded-full ${isDone ? 'bg-slate-600' : 'avatar-gradient'} flex items-center justify-center font-bold text-lg mb-2 shadow-lg">
+                    ${isDone ? '<i class="fas fa-check"></i>' : (i + 1)}
+                </div>
+                <span class="font-bold text-sm truncate w-full text-center text-white">${p}</span>
+                <span class="text-[10px] uppercase mt-1 ${isDone ? 'text-slate-500' : 'text-indigo-300 font-semibold'}">
+                    ${isDone ? 'Listo' : 'Ver'}
+                </span>
+            </div>`;
+        }).join('');
+
+        const statusContainer = document.getElementById('hub-status-container');
+        const btn = document.getElementById('btn-reveal-impostor');
+
+        if(allDone) {
+            // Pick random starter if not picked yet (only for Words mode)
+            if(!state.randomStarter && state.mode === 'words') {
+                const rndIndex = Math.floor(Math.random() * state.players.length);
+                state.randomStarter = state.players[rndIndex];
+            }
+            
+            if(state.mode === 'words') {
+                statusContainer.innerHTML = `
+                    <div class="bg-indigo-600/20 border border-indigo-500/50 rounded-xl p-3 animate-bounce">
+                        <p class="text-xs text-indigo-300 uppercase tracking-widest mb-1">Empieza la ronda el jugador</p>
+                        <p class="text-xl font-bold text-white">${state.randomStarter}</p>
+                    </div>
+                `;
+                btn.innerHTML = '<i class="fas fa-eye mr-2"></i> REVELAR INFILTRADO';
+            } else {
+                // Questions mode - No random starter displayed
+                statusContainer.innerHTML = `
+                    <p class="text-xs text-green-400 font-bold mb-2">¡Todos han respondido!</p>
+                `;
+                btn.innerHTML = 'VER RESPUESTAS';
+            }
+            
+            btn.classList.remove('hidden');
+        } else {
+            statusContainer.innerHTML = `
+                <p class="text-xs text-slate-500 animate-pulse">Esperando a que todos vean su secreto...</p>
+            `;
+            btn.classList.add('hidden');
+        }
+    }
+
+    function enterPlayer(name) {
+        currentPlayerInteraction = name;
+        const isImp = state.roles[name] === 'impostor';
+        
+        const label = document.getElementById('secret-label');
+        const content = document.getElementById('secret-content');
+        const subtext = document.getElementById('secret-subtext');
+        const inputArea = document.getElementById('input-area');
+        const input = document.getElementById('interaction-input');
+        const btnText = document.getElementById('btn-interaction-text');
+
+        document.getElementById('interaction-name').innerText = name;
+        document.getElementById('interaction-initial').innerText = name.charAt(0);
+        input.value = '';
+
+        if(state.mode === 'questions') {
+            // QUESTIONS: Show input
+            inputArea.classList.remove('hidden');
+            btnText.innerText = "ENVIAR Y VOLVER";
+            
+            if(isImp) {
+                label.innerText = "Eres el Infiltrado";
+                content.innerText = state.roundData.i;
+                content.classList.add('text-red-400');
+                subtext.innerText = "Responde para camuflarte.";
+            } else {
+                label.innerText = "Ciudadano";
+                content.innerText = state.roundData.n;
+                content.classList.remove('text-red-400');
+                subtext.innerText = "Responde honestamente.";
+            }
+        } else {
+            // WORDS: No input
+            inputArea.classList.add('hidden');
+            btnText.innerText = "ENTENDIDO";
+
+            if(isImp) {
+                label.innerText = "Misión Secreta";
+                content.innerText = "ERES EL INFILTRADO";
+                content.classList.add('text-red-400');
+                
+                if(state.impostorHint) {
+                    subtext.innerText = `Pista: La categoría es ${state.roundCategoryName}.`;
+                } else {
+                    subtext.innerText = "No sabes la palabra. Disimula.";
+                }
+            } else {
+                label.innerText = "Palabra Secreta";
+                content.innerText = state.roundData;
+                content.classList.remove('text-red-400');
+                subtext.innerText = "Memorizala y no la digas todavía.";
+            }
+        }
+
+        switchScreen('interaction');
+    }
+
+    function completeInteraction() {
+        if(state.mode === 'questions') {
+            const val = document.getElementById('interaction-input').value.trim();
+            if(!val) { showToast("Escribí algo por favor"); return; }
+            state.answers[currentPlayerInteraction] = val;
+        }
+
+        state.completedPlayers.add(currentPlayerInteraction);
+        updateHub();
+        switchScreen('hub');
+    }
+
+    /* --- REVEAL LOGIC --- */
+    function triggerReveal() {
+        switchScreen('reveal');
+        
+        // Ensure cover is visible again when entering screen
+        const cover = document.getElementById('reveal-cover');
+        cover.style.opacity = '1';
+        cover.style.pointerEvents = 'auto';
+
+        document.getElementById('reveal-names').innerText = state.impostorList.join(" & ");
+        
+        if(state.mode === 'questions') {
+            document.getElementById('reveal-data-normal').innerText = state.roundData.n;
+            document.getElementById('reveal-data-impostor').innerText = state.roundData.i;
+            
+            const listDiv = document.getElementById('answers-display');
+            const listContent = document.getElementById('answers-list-content');
+            listDiv.classList.remove('hidden');
+            
+            listContent.innerHTML = state.players.map(p => `
+                <div class="bg-slate-800 p-2 rounded border border-slate-700 flex flex-col">
+                    <span class="text-xs font-bold text-indigo-400 mb-1">${p}</span>
+                    <span class="text-sm text-white italic">"${state.answers[p]}"</span>
+                </div>
+            `).join('');
+
+        } else {
+            // Words Mode
+            document.getElementById('reveal-data-normal').innerText = state.roundData;
+            document.getElementById('reveal-data-impostor').innerText = "Ninguna (Debía improvisar)";
+            document.getElementById('answers-display').classList.add('hidden');
+        }
+    }
+
+    function resetGame() {
+        switchScreen('setup');
+    }
+    
+    function resetToHome() {
+        if(confirm("¿Reiniciar todo?")) location.reload();
+    }
+
+    function switchScreen(id) {
+        Object.values(screens).forEach(s => s.classList.add('hidden-screen'));
+        screens[id].classList.remove('hidden-screen');
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        document.getElementById('toast-msg').innerText = msg;
+        t.style.transform = "translate(-50%, 0)";
+        setTimeout(() => { t.style.transform = "translate(-50%, -150%)"; }, 2000);
+    }
+
+    /* --- CURIOUS TRAP LOGIC --- */
+    function triggerCuriousTrap() {
+        document.getElementById('screen-trap').classList.remove('hidden-screen');
+    }
+
+    function closeCuriousTrap() {
+        document.getElementById('screen-trap').classList.add('hidden-screen');
+    }
+    
+    init();
+</script>
+</body>
+</html>
