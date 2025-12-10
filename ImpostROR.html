@@ -322,41 +322,177 @@
     </div>
 
 <script>
-    /* --- DATASETS --- */
+    /* --- DATASETS WITH REFINED LOGIC & EXPANDED CONTENT --- */
     const DB_QUESTIONS = {
         argentina: [
-            { n: "¿Qué es lo que no puede faltar en la heladera?", i: "¿Qué es lo que no puede faltar en la alacena?" },
-            { n: "¿Cuál es el mejor invento argentino?", i: "¿Cuál es el peor hábito argentino?" },
-            { n: "¿Qué lugar de Argentina visitarías una y otra vez?", i: "¿Qué lugar del mundo te gustaría conocer?" },
-            { n: "¿Qué comida típica le recomendarías a un turista?", i: "¿Qué comida odiás?" },
-            { n: "¿Quién es el argentino más famoso de la historia?", i: "¿Quién es el personaje más polémico?" }
+            { n: "¿Qué es lo que no puede faltar en un asado?", i: "¿Qué es lo que no puede faltar en una picada?" },
+            { n: "¿El mejor lugar para vacacionar en el país?", i: "¿El mejor lugar para vivir en el país?" },
+            { n: "¿Una costumbre argentina que amás?", i: "¿Una costumbre argentina que odiás?" },
+            { n: "¿Tu comida patria favorita?", i: "¿Tu postre nacional favorito?" },
+            { n: "¿Un personaje histórico que admires?", i: "¿Un famoso actual que admires?" },
+            { n: "¿El mejor invento argentino?", i: "¿La mejor banda de rock nacional?" },
+            { n: "¿Mate dulce o amargo?", i: "¿Café con o sin azúcar?" },
+            { n: "¿Playa o montaña para el verano?", i: "¿Invierno o verano en la ciudad?" },
+            { n: "¿Milanesa de carne o pollo?", i: "¿Empanada frita o al horno?" },
+            { n: "¿Lo peor del transporte público?", i: "¿Lo mejor de vivir en Argentina?" }
         ],
         futbol: [
-            { n: "¿Quién es el mejor jugador del mundo hoy?", i: "¿Quién fue el mejor jugador del siglo pasado?" },
-            { n: "¿Qué equipo juega mejor al fútbol actualmente?", i: "¿Qué equipo te cae peor?" },
-            { n: "¿Cuál fue el momento más triste del fútbol?", i: "¿Cuál fue tu momento más feliz?" },
-            { n: "¿Qué regla del fútbol cambiarías?", i: "¿Qué deporte te gusta además del fútbol?" }
+            { n: "¿El mejor 10 de la historia?", i: "¿El mejor capitán de la historia?" },
+            { n: "¿Un estadio donde te gustaría jugar?", i: "¿Un estadio donde te gustaría ver un partido?" },
+            { n: "¿Ganar un clásico sobre la hora?", i: "¿Ganar una copa por penales?" },
+            { n: "¿Qué jugador actual la rompe?", i: "¿Qué jugador promesa la va a romper?" },
+            { n: "¿Bilardo o Menotti?", i: "¿Guardiola o Mourinho?" },
+            { n: "¿El gol que más gritaste?", i: "¿El partido que más sufriste?" },
+            { n: "¿Messi o Maradona?", i: "¿Cristiano o Messi?" },
+            { n: "¿Libertadores o Champions?", i: "¿Mundial o Copa América?" },
+            { n: "¿Jugar con lluvia o con sol?", i: "¿Jugar de día o de noche?" },
+            { n: "¿La mejor hinchada del país?", i: "¿El club más grande del país?" }
         ],
         amor: [
-            { n: "¿Qué es lo más importante en una pareja?", i: "¿Qué es lo que más te atrae físicamente?" },
-            { n: "¿Cuál es el motivo principal de las peleas?", i: "¿Por qué terminan las relaciones?" },
-            { n: "¿Creés en el amor a primera vista?", i: "¿Creés en el destino?" }
+            { n: "¿Plan ideal para una primera cita?", i: "¿Plan ideal para un aniversario?" },
+            { n: "¿Cualidad física que más mirás?", i: "¿Cualidad de personalidad que más mirás?" },
+            { n: "¿Motivo para dejar a alguien?", i: "¿Motivo para perdonar a alguien?" },
+            { n: "¿Edad ideal para casarse?", i: "¿Edad ideal para irse a vivir juntos?" },
+            { n: "¿Perdonarías una infidelidad física?", i: "¿Perdonarías una infidelidad emocional?" },
+            { n: "¿Mejor regalo para tu pareja?", i: "¿Peor regalo que te hizo una pareja?" },
+            { n: "¿Amor a primera vista o con el tiempo?", i: "¿Destino o casualidad en el amor?" },
+            { n: "¿Celos: señal de amor o inseguridad?", i: "¿Revisar el celular: sí o no?" },
+            { n: "¿Ex en redes sociales: bloquear o ignorar?", i: "¿Ser amigo de tu ex: posible o imposible?" },
+            { n: "¿Dormir abrazados o cada uno en su lado?", i: "¿Dormir con o sin mascotas?" },
+            { n: "¿Quién debe pagar la primera cita?", i: "¿Quién debe proponer la primera cita?" },
+            { n: "¿Relación abierta o monogamia?", i: "¿Poliamor o pareja tradicional?" }
         ],
         variado: [
-            { n: "¿Qué harías con 1 millón de dólares?", i: "¿Qué harías si fueras invisible?" },
-            { n: "¿Cuál es tu mayor miedo?", i: "¿Cuál es tu mayor sueño?" },
-            { n: "¿Qué superpoder tendrías?", i: "¿Qué animal serías?" }
+            { n: "¿Si tuvieras un superpoder, cuál sería?", i: "¿Si fueras un villano, qué poder tendrías?" },
+            { n: "¿Qué harías con un millón de dólares?", i: "¿Qué harías con un mes de vacaciones pagas?" },
+            { n: "¿Tu mayor miedo?", i: "¿Tu mayor vergüenza?" },
+            { n: "¿Viajar al pasado o al futuro?", i: "¿Vivir en el espacio o en el fondo del mar?" },
+            { n: "¿Perro o gato?", i: "¿Mascota exótica o tradicional?" },
+            { n: "¿Verano o invierno?", i: "¿Otoño o primavera?" },
+            { n: "¿Ser famoso o ser millonario?", i: "¿Tener paz o tener poder?" },
+            { n: "¿Una película que verías mil veces?", i: "¿Una serie que no te cansás de ver?" }
+        ],
+        humor_negro: [
+            { n: "¿Lugar inapropiado para reírse?", i: "¿Lugar inapropiado para gritar?" },
+            { n: "¿Peor forma de morir?", i: "¿Peor forma de lesionarse?" },
+            { n: "¿Chiste sobre enfermedades: sí o no?", i: "¿Chiste sobre tragedias: sí o no?" },
+            { n: "¿Qué harías con un cadáver si nadie te ve?", i: "¿Qué harías si presencias un crimen?" },
+            { n: "¿A quién salvarías en un apocalipsis zombie?", i: "¿A quién usarías de escudo humano?" },
+            { n: "¿Venderías un órgano por dinero?", i: "¿Donarías un órgano en vida?" },
+            { n: "¿Reírse en un velorio?", i: "¿Llorar en un cumpleaños?" },
+            { n: "¿Morir joven y leyenda o viejo y olvidado?", i: "¿Vivir para siempre o morir mañana?" }
+        ],
+        tecnologia: [
+            { n: "¿App que usás todo el día?", i: "¿App que deberías borrar?" },
+            { n: "¿Invento tecnológico más útil?", i: "¿Invento tecnológico más peligroso?" },
+            { n: "¿iPhone o Android?", i: "¿PC o Consola?" },
+            { n: "¿Vivir sin internet o sin agua caliente?", i: "¿Vivir sin celular o sin televisión?" },
+            { n: "¿Trabajo remoto o presencial?", i: "¿Estudiar online o en aula?" },
+            { n: "¿Elon Musk: genio o loco?", i: "¿Mark Zuckerberg: humano o robot?" },
+            { n: "¿Inteligencia Artificial: amenaza u oportunidad?", i: "¿Robots: sirvientes o dueños?" },
+            { n: "¿Red social más tóxica?", i: "¿Red social más adictiva?" }
+        ],
+        placeres: [
+            { n: "¿Comida chatarra favorita?", i: "¿Comida casera favorita?" },
+            { n: "¿Tu gusto culposo musical?", i: "¿La canción que más escuchás ahora?" },
+            { n: "¿Chocolate o helado?", i: "¿Dulce o salado?" },
+            { n: "¿Dormir siesta o levantarse tarde?", i: "¿Acostarse tarde o madrugar?" },
+            { n: "¿Serie maratónica o película larga?", i: "¿Cine o sillón en casa?" },
+            { n: "¿Masaje o día de spa?", i: "¿Cena de lujo o viaje express?" },
+            { n: "¿Pizza fría al desayuno?", i: "¿Helado en invierno?" },
+            { n: "¿Salir a bailar o bar tranquilo?", i: "¿Juntada en casa o salir a comer?" }
+        ],
+        vida_diaria: [
+            { n: "¿Lo peor de levantarse temprano?", i: "¿Lo peor de trasnochar?" },
+            { n: "¿Tarea del hogar que detestas?", i: "¿Tarea del hogar que no te molesta?" },
+            { n: "¿Lunes a la mañana o domingo a la tarde?", i: "¿Viernes a la noche o sábado a la mañana?" },
+            { n: "¿Tráfico en hora pico o transporte lleno?", i: "¿Lluvia sin paraguas o calor sin aire?" },
+            { n: "¿Cocinar o lavar los platos?", i: "¿Planchar o limpiar el baño?" },
+            { n: "¿Vecino ruidoso o vecino chusma?", i: "¿Compañero de trabajo vago o jefe molesto?" },
+            { n: "¿Sueldo alto o trabajo que amás?", i: "¿Jefe bueno o compañeros amigos?" },
+            { n: "¿Supermercado lleno o cajero sin plata?", i: "¿Trámite eterno o internet lento?" }
         ]
     };
 
+    /* UPDATED HINTS: Single word only */
     const DB_WORDS = {
-        argentina: ["Mate", "Obelisco", "Asado", "Dulce de Leche", "Fernet", "Messi", "Milanesa", "Carpincho", "Dólar Blue", "Subte", "Choripán", "Camiseta", "Fútbol", "Empanada", "Iguazú", "Patagonia", "Colectivo", "Facturas"],
-        futbol: ["Messi", "Maradona", "Pelota", "Arco", "Penal", "VAR", "Mundial", "Copa", "Botines", "Cristiano Ronaldo", "Mbappé", "Haaland", "Vinicius Jr", "Bellingham", "Real Madrid", "Barcelona", "Manchester City", "Boca Juniors", "River Plate", "Scaloni", "Dibu Martínez", "Offside", "Corner"],
-        amor: ["Boda", "Anillo", "Divorcio", "Tinder", "Corazón", "Cita", "Beso", "Ex", "Flores", "Cena", "San Valentín", "Novio", "Amante", "Celos", "Infidelidad", "Ruptura", "Compromiso"],
-        humor_negro: ["Funeral", "Herencia", "Fantasma", "Accidente", "Crimen", "Cárcel", "Veneno", "Ataúd", "Testamento", "Zombies", "Cementerio", "Morgue", "Apocalipsis", "Caníbal", "Lápida"],
-        tecnologia: ["Robot", "Wifi", "Instagram", "Hacker", "Dron", "Bitcoin", "IA", "Virus", "Contraseña", "TikTok", "Google", "Smartphone", "Nube", "Streaming", "WhatsApp", "Influencer", "Gamer"],
-        placeres: ["Chocolate", "Pizza", "Netflix", "Siesta", "Helado", "Hamburguesa", "Cerveza", "Viernes", "Shopping", "Masaje", "Queso", "Vino", "Playa", "Vacaciones", "Dormir"],
-        vida_diaria: ["Trabajo", "Despertador", "Tráfico", "Supermercado", "Alquiler", "Lluvia", "Lunes", "Café", "Sueldo", "Jefe", "Impuestos", "Examen", "Gimnasio", "Dieta", "Insomnio"]
+        argentina: [
+            {w: "Mate", h: "Infusión"}, {w: "Obelisco", h: "Monumento"}, 
+            {w: "Asado", h: "Carne"}, {w: "Dulce de Leche", h: "Postre"}, 
+            {w: "Fernet", h: "Bebida"}, {w: "Messi", h: "Ídolo"}, 
+            {w: "Milanesa", h: "Comida"}, {w: "Carpincho", h: "Roedor"}, 
+            {w: "Dólar Blue", h: "Economía"}, {w: "Subte", h: "Transporte"}, 
+            {w: "Choripán", h: "Parrilla"}, {w: "Camiseta", h: "Vestimenta"}, 
+            {w: "Fútbol", h: "Deporte"}, {w: "Empanada", h: "Masa"}, 
+            {w: "Iguazú", h: "Agua"}, {w: "Patagonia", h: "Sur"}, 
+            {w: "Colectivo", h: "Viaje"}, {w: "Facturas", h: "Panadería"}
+        ],
+        futbol: [
+            {w: "Messi", h: "Astro"}, {w: "Maradona", h: "Leyenda"}, 
+            {w: "Pelota", h: "Esfera"}, {w: "Arco", h: "Meta"}, 
+            {w: "Penal", h: "Disparo"}, {w: "VAR", h: "Video"}, 
+            {w: "Mundial", h: "Torneo"}, {w: "Copa", h: "Trofeo"}, 
+            {w: "Botines", h: "Calzado"}, {w: "Cristiano Ronaldo", h: "Goleador"}, 
+            {w: "Mbappé", h: "Velocidad"}, {w: "Haaland", h: "Potencia"}, 
+            {w: "Vinicius Jr", h: "Regate"}, {w: "Bellingham", h: "Mediocampo"}, 
+            {w: "Real Madrid", h: "Blanco"}, {w: "Barcelona", h: "Blaugrana"}, 
+            {w: "Manchester City", h: "Celeste"}, {w: "Boca Juniors", h: "Bombonera"}, 
+            {w: "River Plate", h: "Monumental"}, {w: "Scaloni", h: "Técnico"}, 
+            {w: "Dibu Martínez", h: "Atajada"}, {w: "Offside", h: "Posición"}, 
+            {w: "Corner", h: "Esquina"}
+        ],
+        amor: [
+            {w: "Boda", h: "Fiesta"}, {w: "Anillo", h: "Joya"}, 
+            {w: "Divorcio", h: "Separación"}, {w: "Tinder", h: "App"}, 
+            {w: "Corazón", h: "Órgano"}, {w: "Cita", h: "Encuentro"}, 
+            {w: "Beso", h: "Contacto"}, {w: "Ex", h: "Pasado"}, 
+            {w: "Flores", h: "Regalo"}, {w: "Cena", h: "Noche"}, 
+            {w: "San Valentín", h: "Fecha"}, {w: "Novio", h: "Pareja"}, 
+            {w: "Amante", h: "Secreto"}, {w: "Celos", h: "Posesión"}, 
+            {w: "Infidelidad", h: "Traición"}, {w: "Ruptura", h: "Fin"}, 
+            {w: "Compromiso", h: "Promesa"}
+        ],
+        humor_negro: [
+            {w: "Funeral", h: "Adiós"}, {w: "Herencia", h: "Dinero"}, 
+            {w: "Fantasma", h: "Espíritu"}, {w: "Accidente", h: "Choque"}, 
+            {w: "Crimen", h: "Delito"}, {w: "Cárcel", h: "Rejas"}, 
+            {w: "Veneno", h: "Tóxico"}, {w: "Ataúd", h: "Madera"}, 
+            {w: "Testamento", h: "Papel"}, {w: "Zombies", h: "Muertos"}, 
+            {w: "Cementerio", h: "Tumbas"}, {w: "Morgue", h: "Frío"}, 
+            {w: "Apocalipsis", h: "Final"}, {w: "Caníbal", h: "Hambre"}, 
+            {w: "Lápida", h: "Piedra"}
+        ],
+        tecnologia: [
+            {w: "Robot", h: "Máquina"}, {w: "Wifi", h: "Red"}, 
+            {w: "Instagram", h: "Fotos"}, {w: "Hacker", h: "Acceso"}, 
+            {w: "Dron", h: "Vuelo"}, {w: "Bitcoin", h: "Moneda"}, 
+            {w: "IA", "h": "Inteligencia"}, {w: "Virus", h: "Infección"}, 
+            {w: "Contraseña", h: "Clave"}, {w: "TikTok", h: "Videos"}, 
+            {w: "Google", h: "Buscador"}, {w: "Smartphone", h: "Móvil"}, 
+            {w: "Nube", h: "Datos"}, {w: "Streaming", h: "Vivo"}, 
+            {w: "WhatsApp", h: "Chat"}, {w: "Influencer", h: "Fama"}, 
+            {w: "Gamer", h: "Juego"}
+        ],
+        placeres: [
+            {w: "Chocolate", h: "Cacao"}, {w: "Pizza", h: "Harina"}, 
+            {w: "Netflix", h: "Pantalla"}, {w: "Siesta", h: "Descanso"}, 
+            {w: "Helado", h: "Frío"}, {w: "Hamburguesa", h: "Carne"}, 
+            {w: "Cerveza", h: "Cebada"}, {w: "Viernes", h: "Fin"}, 
+            {w: "Shopping", h: "Compras"}, {w: "Masaje", h: "Relax"}, 
+            {w: "Queso", h: "Lácteo"}, {w: "Vino", h: "Uva"}, 
+            {w: "Playa", h: "Arena"}, {w: "Vacaciones", h: "Viaje"}, 
+            {w: "Dormir", h: "Sueño"}
+        ],
+        vida_diaria: [
+            {w: "Trabajo", h: "Labor"}, {w: "Despertador", h: "Alarma"}, 
+            {w: "Tráfico", h: "Autos"}, {w: "Supermercado", h: "Compras"}, 
+            {w: "Alquiler", h: "Pago"}, {w: "Lluvia", h: "Agua"}, 
+            {w: "Lunes", h: "Inicio"}, {w: "Café", h: "Taza"}, 
+            {w: "Sueldo", h: "Dinero"}, {w: "Jefe", h: "Mando"}, 
+            {w: "Impuestos", h: "Estado"}, {w: "Examen", h: "Prueba"}, 
+            {w: "Gimnasio", h: "Pesas"}, {w: "Dieta", h: "Comida"}, 
+            {w: "Insomnio", h: "Noche"}
+        ]
     };
 
     const CATEGORIES = [
@@ -378,12 +514,13 @@
         impostorHint: false,
         
         roles: {}, 
-        roundData: null,
+        roundData: null, // Stores {n,i} or {w,h}
         roundCategoryName: '', 
         impostorList: [],
         completedPlayers: new Set(),
         answers: {},
-        randomStarter: '' 
+        randomStarter: '',
+        roundOrder: [] // Stores the names in speaking order
     };
 
     let currentPlayerInteraction = '';
@@ -429,7 +566,6 @@
             container.innerHTML = '<p class="text-slate-600 text-sm italic w-full text-center py-2">Agregá jugadores en orden...</p>';
             return;
         }
-        // Use index to show 1), 2) etc.
         container.innerHTML = state.players.map((p, i) => `
             <div class="bg-slate-800 border border-slate-700 pl-3 pr-2 py-1.5 rounded-lg flex items-center gap-2 fade-enter">
                 <span class="text-sm font-bold text-slate-200"><span class="text-indigo-400 mr-1">${i+1})</span> ${p}</span>
@@ -501,6 +637,7 @@
         state.completedPlayers = new Set();
         state.answers = {};
         state.randomStarter = '';
+        state.roundOrder = [];
         
         // 1. Assign Roles
         state.roles = {};
@@ -531,7 +668,12 @@
         state.roundCategoryName = catObj ? catObj.name : 'General';
 
         let pool = (state.mode === 'questions') ? DB_QUESTIONS[randomCatId] : DB_WORDS[randomCatId];
+        // Fallback checks
         if (!pool) pool = (state.mode === 'questions') ? DB_QUESTIONS['argentina'] : DB_WORDS['argentina'];
+        if (!pool || pool.length === 0) {
+             // Ultimate Fallback
+             pool = (state.mode === 'questions') ? DB_QUESTIONS['argentina'] : DB_WORDS['argentina'];
+        }
 
         state.roundData = pool[Math.floor(Math.random() * pool.length)];
 
@@ -548,7 +690,6 @@
 
         grid.innerHTML = state.players.map((p, i) => {
             const isDone = state.completedPlayers.has(p);
-            // Display Index + Name
             return `
             <div onclick="${!isDone ? `enterPlayer('${p}')` : ''}" 
                  class="player-card ${isDone ? 'done' : 'bg-slate-700/50 border-indigo-500/30'} 
@@ -567,22 +708,31 @@
         const btn = document.getElementById('btn-reveal-impostor');
 
         if(allDone) {
-            // Pick random starter if not picked yet (only for Words mode)
-            if(!state.randomStarter && state.mode === 'words') {
-                const rndIndex = Math.floor(Math.random() * state.players.length);
-                state.randomStarter = state.players[rndIndex];
-            }
-            
+            // Determine round order for Words mode
             if(state.mode === 'words') {
+                if(state.roundOrder.length === 0) {
+                    const rndIndex = Math.floor(Math.random() * state.players.length);
+                    // Reorder players array starting from rndIndex
+                    const ordered = [
+                        ...state.players.slice(rndIndex),
+                        ...state.players.slice(0, rndIndex)
+                    ];
+                    state.roundOrder = ordered;
+                    state.randomStarter = state.players[rndIndex];
+                }
+                
+                const orderStr = state.roundOrder.join(" <i class='fas fa-arrow-right text-[10px] mx-1 opacity-50'></i> ");
+
                 statusContainer.innerHTML = `
-                    <div class="bg-indigo-600/20 border border-indigo-500/50 rounded-xl p-3 animate-bounce">
-                        <p class="text-xs text-indigo-300 uppercase tracking-widest mb-1">Empieza la ronda el jugador</p>
-                        <p class="text-xl font-bold text-white">${state.randomStarter}</p>
+                    <div class="bg-indigo-600/20 border border-indigo-500/50 rounded-xl p-4 animate-fade-in">
+                        <p class="text-xs text-indigo-300 uppercase tracking-widest mb-2 font-bold">Orden de la ronda</p>
+                        <div class="text-sm font-medium text-white flex flex-wrap justify-center items-center gap-y-1">
+                            ${orderStr}
+                        </div>
                     </div>
                 `;
                 btn.innerHTML = '<i class="fas fa-eye mr-2"></i> REVELAR INFILTRADO';
             } else {
-                // Questions mode - No random starter displayed
                 statusContainer.innerHTML = `
                     <p class="text-xs text-green-400 font-bold mb-2">¡Todos han respondido!</p>
                 `;
@@ -614,7 +764,6 @@
         input.value = '';
 
         if(state.mode === 'questions') {
-            // QUESTIONS: Show input
             inputArea.classList.remove('hidden');
             btnText.innerText = "ENVIAR Y VOLVER";
             
@@ -630,7 +779,6 @@
                 subtext.innerText = "Responde honestamente.";
             }
         } else {
-            // WORDS: No input
             inputArea.classList.add('hidden');
             btnText.innerText = "ENTENDIDO";
 
@@ -640,13 +788,13 @@
                 content.classList.add('text-red-400');
                 
                 if(state.impostorHint) {
-                    subtext.innerText = `Pista: La categoría es ${state.roundCategoryName}.`;
+                    subtext.innerText = `Pista: ${state.roundData.h}`;
                 } else {
                     subtext.innerText = "No sabes la palabra. Disimula.";
                 }
             } else {
                 label.innerText = "Palabra Secreta";
-                content.innerText = state.roundData;
+                content.innerText = state.roundData.w;
                 content.classList.remove('text-red-400');
                 subtext.innerText = "Memorizala y no la digas todavía.";
             }
@@ -671,7 +819,6 @@
     function triggerReveal() {
         switchScreen('reveal');
         
-        // Ensure cover is visible again when entering screen
         const cover = document.getElementById('reveal-cover');
         cover.style.opacity = '1';
         cover.style.pointerEvents = 'auto';
@@ -695,7 +842,7 @@
 
         } else {
             // Words Mode
-            document.getElementById('reveal-data-normal').innerText = state.roundData;
+            document.getElementById('reveal-data-normal').innerText = state.roundData.w;
             document.getElementById('reveal-data-impostor').innerText = "Ninguna (Debía improvisar)";
             document.getElementById('answers-display').classList.add('hidden');
         }
@@ -721,7 +868,6 @@
         setTimeout(() => { t.style.transform = "translate(-50%, -150%)"; }, 2000);
     }
 
-    /* --- CURIOUS TRAP LOGIC --- */
     function triggerCuriousTrap() {
         document.getElementById('screen-trap').classList.remove('hidden-screen');
     }
